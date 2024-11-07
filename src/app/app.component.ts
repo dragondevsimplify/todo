@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import type { Job } from './models';
+import type { Job, JobStatus } from './models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -11,9 +11,10 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   jobs: Job[] = [];
-  jobInput: string = '';
+  jobInput = '';
+  activeTabName: JobStatus = 'all'
 
-  getJobsByStatus(status: 'all' | 'active' | 'completed') {
+  getJobsByStatus(status: JobStatus) {
     if (status === 'all') {
       return this.jobs
     }
@@ -37,5 +38,13 @@ export class AppComponent {
 
   deleteJob(idx: number) {
     this.jobs.splice(idx, 1);
+  }
+
+  activeTab(tabName: JobStatus) {
+    this.activeTabName = tabName
+  }
+
+  clearCompletedJob() {
+    this.jobs = this.getJobsByStatus('active')
   }
 }
