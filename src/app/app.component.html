@@ -3,7 +3,10 @@
   <div class="shadow-card min-w-[550px] bg-white">
     <!-- Input -->
     <div class="relative">
-      <button class="absolute top-0 left-0 h-full w-10 text-[#949494] text-2xl">
+      <button
+        class="absolute top-0 left-0 h-full w-10 text-[#949494] text-2xl"
+        (click)="toggleAllJobComplete()"
+      >
         <i class="fa-solid fa-angle-down"></i>
       </button>
       <input

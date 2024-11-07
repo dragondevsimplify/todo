@@ -23,7 +23,9 @@ export class AppComponent {
   }
 
   addJob() {
-    if (!this.jobInput) return;
+    if (!this.jobInput) {
+      return
+    };
 
     this.jobs.push({
       title: this.jobInput,
@@ -46,5 +48,20 @@ export class AppComponent {
 
   clearCompletedJob() {
     this.jobs = this.getJobsByStatus('active')
+  }
+
+  toggleAllJobComplete() {
+    let someCompleted = false, allCompleted = true
+    for (const job of this.jobs) {
+      if (job.completed) {
+        someCompleted = true
+      } else {
+        allCompleted = false
+      }
+    }
+
+    this.jobs.forEach(job => {
+      job.completed = (someCompleted && !allCompleted) ? true : !allCompleted
+    })
   }
 }
