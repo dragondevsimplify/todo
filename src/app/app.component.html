@@ -1,10 +1,13 @@
-<main class="flex justify-center items-center flex-col">
+<main class="flex justify-center items-center flex-col" (click)="clickOutside($event)">
   <h1 class="text-[80px] text-[#b83f45] text-center">Todos</h1>
   <div class="shadow-card min-w-[550px] bg-white">
     <!-- Input -->
     <div class="relative">
       <button
         class="absolute top-0 left-0 h-full w-10 text-[#949494] text-2xl"
+        [ngClass]="{
+          'text-gray-800': allCompleted
+        }"
         (click)="toggleAllJobComplete()"
       >
         <i class="fa-solid fa-angle-down"></i>
@@ -19,10 +22,11 @@
     </div>
     <!-- Todos -->
     <div class="relative z-[1] shadow-[0px_-2px_4px_#e5e7eb]">
-      <ul>
+      <ul #jobsUl>
         <li
           *ngFor="let job of getJobsByStatus(activeTabName); index as idx"
           class="flex w-full text-2xl relative"
+          (dblclick)="editJob($event)"
         >
           <button class="w-10 ml-1" (click)="toggleJobComplete(job)">
             <i
@@ -38,6 +42,7 @@
             [ngClass]="{
               'line-through text-gray-400': job.completed,
             }"
+            [attr.data-jobindex]="idx"
             >{{ job.title }}</span
           >
           <button
@@ -52,7 +57,7 @@
         <p>{{ getJobsByStatus("active").length }} items left</p>
         <div class="ml-12">
           <button
-            class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 px-[7px] mr-3"
+            class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px] mr-3"
             [ngClass]="{
               'outline outline-1 outline-red-600': activeTabName === 'all'
             }"
@@ -61,7 +66,7 @@
             All
           </button>
           <button
-            class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 px-[7px] mr-3"
+            class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px] mr-3"
             [ngClass]="{
               'outline outline-1 outline-red-600': activeTabName === 'active'
             }"
@@ -70,7 +75,7 @@
             Active
           </button>
           <button
-            class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 px-[7px]"
+            class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px]"
             [ngClass]="{
               'outline outline-1 outline-red-600': activeTabName === 'completed'
             }"
