@@ -13,6 +13,7 @@ export class AppComponent {
   jobs: Job[] = [];
   jobInput = '';
   activeTabName: JobStatus = 'all'
+  someCompleted = false
   allCompleted = false
 
   @ViewChild('jobsUl', { static: true}) jobsUl!: ElementRef
@@ -39,6 +40,7 @@ export class AppComponent {
 
   toggleJobComplete(job: Job) {
     job.completed = !job.completed;
+    this.someCompleted = this.isSomeJobsCompleted()
     this.allCompleted = this.isAllJobsCompleted()
   }
 
@@ -59,21 +61,26 @@ export class AppComponent {
       return
     }
 
-    let someCompleted = false
+    this.someCompleted = false
     this.allCompleted = true
     for (const job of this.jobs) {
       if (job.completed) {
-        someCompleted = true
+        this.someCompleted = true
       } else {
         this.allCompleted = false
       }
     }
 
     this.jobs.forEach(job => {
-      job.completed = (someCompleted && !this.allCompleted) ? true : !this.allCompleted
+      job.completed = (this.someCompleted && !this.allCompleted) ? true : !this.allCompleted
     })
 
+    this.someCompleted = this.isSomeJobsCompleted()
     this.allCompleted = this.isAllJobsCompleted()
+  }
+
+  isSomeJobsCompleted() {
+    return this.jobs.some(i => i.completed)
   }
 
   isAllJobsCompleted() {

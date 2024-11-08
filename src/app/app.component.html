@@ -85,10 +85,13 @@
             Completed
           </button>
         </div>
-        <button class="hover:underline" (click)="clearCompletedJob()">
-          Clear Completed
-        </button>
+        <div class="min-w-[120px]">
+          <button *ngIf="someCompleted" class="hover:underline" (click)="clearCompletedJob()">
+            Clear Completed
+          </button>
+        </div>
       </div>
     </div>
   </div>
+  <p class="mt-4 text-sm">Double-click to edit a todo</p>
 </main>
