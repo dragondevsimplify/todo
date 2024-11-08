@@ -91,6 +91,12 @@ export class AppComponent {
     target.focus()
   }
 
+  updateJobTitle(e: Event, job: Job) {
+    const target = e.target as HTMLSpanElement
+    job.title = target.textContent ?? ""
+    target.blur()
+  }
+
   clickOutside(e: Event) {
     const target = e.target as HTMLElement
     let targetJobIndex: number

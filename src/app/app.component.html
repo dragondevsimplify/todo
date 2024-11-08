@@ -43,6 +43,7 @@
               'line-through text-gray-400': job.completed,
             }"
             [attr.data-jobindex]="idx"
+            (keydown.enter)="updateJobTitle($event, job)"
             >{{ job.title }}</span
           >
           <button
