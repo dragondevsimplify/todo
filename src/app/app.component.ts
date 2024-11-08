@@ -95,6 +95,7 @@ export class AppComponent {
     const target = e.target as HTMLElement
     let targetJobIndex: number
 
+    // Get current target job index
     if (target?.localName === 'span') {
       targetJobIndex = +target.dataset['jobindex']!
     }
@@ -104,6 +105,7 @@ export class AppComponent {
       return
     }
 
+    // Disable content editable for all job, only current target
     [...nativeElement.children].forEach(li => {
       const span = li.querySelector('span') as HTMLSpanElement
       if (!span) {
