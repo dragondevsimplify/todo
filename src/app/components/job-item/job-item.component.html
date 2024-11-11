@@ -1,1 +1,24 @@
-<p>job-item works!</p>
+<button class="w-10 ml-1" (click)="toggleJobComplete(job)">
+  <i
+    *ngIf="job.completed; else activeJobIcon"
+    class="fa-regular fa-circle-check text-green-500"
+  ></i>
+  <ng-template #activeJobIcon>
+    <i class="fa-regular fa-circle text-gray-500"></i>
+  </ng-template>
+</button>
+<span
+  class="text-[#484848] w-full p-4 border-none outline-none focus:shadow-[0_0_2px_2px_#cf7d7d] h-[65px] placeholder:italic placeholder:text-[#949494]"
+  [ngClass]="{
+      'line-through text-gray-400': job.completed,
+    }"
+  [attr.data-jobindex]="index"
+  (keydown.enter)="updateJobTitle($event, job)"
+  >{{ job.title }}</span
+>
+<button
+  class="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 py-0 px-2 -mr-2"
+  (click)="deleteJob.emit(index)"
+>
+  <i class="fa-solid fa-xmark"></i>
+</button>

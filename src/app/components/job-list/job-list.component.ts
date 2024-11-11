@@ -8,11 +8,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Job, JobStatus } from '../../models';
+import { JobItemComponent } from "../job-item/job-item.component";
 
 @Component({
   selector: 'app-job-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, JobItemComponent],
   templateUrl: './job-list.component.html',
 })
 export class JobListComponent {
@@ -24,29 +25,7 @@ export class JobListComponent {
 
   @ViewChild('jobsUl') jobsUl!: ElementRef
 
-  toggleJobComplete(job: Job) {
-    job.completed = !job.completed;
-    this.reloadJobsStatus.emit();
-  }
-
   deleteJob(idx: number) {
     this.jobs.splice(idx, 1);
-  }
-
-  editJob(e: Event) {
-    const target = e.target as HTMLElement;
-
-    if (target?.localName !== 'span') {
-      return;
-    }
-
-    target.contentEditable = 'true';
-    target.focus();
-  }
-
-  updateJobTitle(e: Event, job: Job) {
-    const target = e.target as HTMLSpanElement;
-    job.title = target.textContent ?? '';
-    target.blur();
   }
 }
