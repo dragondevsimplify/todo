@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AddJobComponent } from "./components/add-job/add-job.component";
 import { JobListComponent } from "./components/job-list/job-list.component";
+import { JobsService } from './services/jobs.service';
 
 @Component({
   selector: 'app-root',
@@ -12,33 +13,11 @@ import { JobListComponent } from "./components/job-list/job-list.component";
   templateUrl: './app.component.html',
 })
 export class AppComponent {
-  jobs: Job[] = [];
   activeTabName: JobStatus = 'all'
   someCompleted = false
   allCompleted = false
 
   @ViewChild(JobListComponent) jobListComp!: JobListComponent
-
-  getJobsByStatus(status: JobStatus) {
-    if (status === 'all') {
-      return this.jobs
-    }
-
-    return this.jobs.filter(i => status === 'active' ? !i.completed : i.completed)
-  }
-
-  isSomeJobsCompleted() {
-    return this.jobs.some(i => i.completed)
-  }
-
-  isAllJobsCompleted() {
-    return this.jobs.every(i => i.completed)
-  }
-
-  reloadJobsStatus() {
-    this.someCompleted = this.isSomeJobsCompleted()
-    this.allCompleted = this.isAllJobsCompleted()
-  }
 
   clickOutside(e: Event) {
     const target = e.target as HTMLElement

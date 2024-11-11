@@ -15,9 +15,6 @@ export class JobItemComponent {
   @Input({ required: true }) job!: Job;
   @Input({ required: true }) index!: number;
 
-  @Output() reloadJobsStatus = new EventEmitter<void>();
-  @Output() deleteJob = new EventEmitter<number>();
-
   toggleJobComplete(job: Job) {
     job.completed = !job.completed;
     this.reloadJobsStatus.emit();

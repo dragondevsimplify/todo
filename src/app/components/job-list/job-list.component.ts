@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  EventEmitter,
   Input,
-  Output,
   ViewChild,
 } from '@angular/core';
-import { Job, JobStatus } from '../../models';
+import { JobStatus } from '../../models';
 import { JobItemComponent } from "../job-item/job-item.component";
+import { JobsService } from '../../services/jobs.service';
 
 @Component({
   selector: 'app-job-list',
@@ -17,26 +16,30 @@ import { JobItemComponent } from "../job-item/job-item.component";
   templateUrl: './job-list.component.html',
 })
 export class JobListComponent {
-  @Input({ required: true }) jobs!: Job[];
   @Input({ required: true }) activeTabName!: JobStatus;
-  @Input({ required: true }) someCompleted!: boolean;
-  @Input({ required: true }) getJobsByStatus!: (status: JobStatus) => Job[]
 
-  @Output() reloadJobsStatus = new EventEmitter<void>();
-  @Output() jobsChange = new EventEmitter<Job[]>();
-
+  //todo: Use for app component
   @ViewChild('jobsUl') jobsUl!: ElementRef
 
-  deleteJob(idx: number) {
-    this.jobs.splice(idx, 1);
+  constructor(private jobsService: JobsService) {}
+
+  get someCompleted() {
+    return this.jobsService.someCompleted
+  }
+
+  getJobsByStatus(status: JobStatus) {
+    return this.jobsService.getJobsByStatus(status)
   }
 
   activeTab(tabName: JobStatus) {
     this.activeTabName = tabName
   }
 
+  deleteJob(idx: number) {
+    this.jobsService.deleteJob(idx)
+  }
+
   clearCompletedJob() {
-    this.jobs = this.getJobsByStatus('active')
-    this.jobsChange.emit(this.jobs)
+    this.clearCompletedJob()
   }
 }

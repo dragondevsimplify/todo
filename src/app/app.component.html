@@ -5,21 +5,12 @@
   <h1 class="text-[80px] text-[#b83f45] text-center">Todos</h1>
   <div class="shadow-card min-w-[550px] bg-white">
     <!-- Input -->
-    <app-add-job
-      [jobs]="jobs"
-      [someCompleted]="someCompleted"
-      [allCompleted]="allCompleted"
-      (reloadJobsStatus)="reloadJobsStatus()"
-    />
+    <app-add-job />
 
     <!-- Todos -->
     <div class="relative z-[1] shadow-[0px_-2px_4px_#e5e7eb]">
       <app-job-list
-        [(jobs)]="jobs"
-        [someCompleted]="someCompleted"
         [activeTabName]="activeTabName"
-        [getJobsByStatus]="getJobsByStatus"
-        (reloadJobsStatus)="reloadJobsStatus()"
       />
     </div>
   </div>

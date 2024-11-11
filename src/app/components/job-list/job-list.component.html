@@ -5,8 +5,6 @@
     [job]="job"
     [index]="idx"
     *ngFor="let job of getJobsByStatus(activeTabName); index as idx"
-    (deleteJob)="deleteJob($event)"
-    (reloadJobsStatus)="reloadJobsStatus.emit()"
   ></li>
 </ul>
 <!-- Controls -->
