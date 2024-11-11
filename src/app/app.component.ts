@@ -1,22 +1,31 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import type { Job, JobStatus } from './models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AddJobComponent } from "./components/add-job/add-job.component";
+import { JobListComponent } from "./components/job-list/job-list.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [FormsModule, CommonModule, AddJobComponent],
+  imports: [FormsModule, CommonModule, AddJobComponent, JobListComponent],
   templateUrl: './app.component.html',
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   jobs: Job[] = [];
   activeTabName: JobStatus = 'all'
   someCompleted = false
   allCompleted = false
 
-  @ViewChild('jobsUl', { static: true}) jobsUl!: ElementRef
+  @ViewChild(JobListComponent) jobListComp!: JobListComponent
+
+  ngAfterViewInit(): void {
+    console.log(this.jobListComp.jobsUl)
+  }
+
+  activeTab(tabName: JobStatus) {
+    this.activeTabName = tabName
+  }
 
   getJobsByStatus(status: JobStatus) {
     if (status === 'all') {
@@ -24,19 +33,6 @@ export class AppComponent {
     }
 
     return this.jobs.filter(i => status === 'active' ? !i.completed : i.completed)
-  }
-
-  toggleJobComplete(job: Job) {
-    job.completed = !job.completed;
-    this.reloadJobsStatus()
-  }
-
-  deleteJob(idx: number) {
-    this.jobs.splice(idx, 1);
-  }
-
-  activeTab(tabName: JobStatus) {
-    this.activeTabName = tabName
   }
 
   clearCompletedJob() {
@@ -56,23 +52,6 @@ export class AppComponent {
     this.allCompleted = this.isAllJobsCompleted()
   }
 
-  editJob(e: Event) {
-    const target = e.target as HTMLElement
-
-    if (target?.localName !== 'span') {
-      return
-    }
-
-    target.contentEditable = 'true'
-    target.focus()
-  }
-
-  updateJobTitle(e: Event, job: Job) {
-    const target = e.target as HTMLSpanElement
-    job.title = target.textContent ?? ""
-    target.blur()
-  }
-
   clickOutside(e: Event) {
     const target = e.target as HTMLElement
     let targetJobIndex: number
@@ -82,7 +61,7 @@ export class AppComponent {
       targetJobIndex = +target.dataset['jobindex']!
     }
 
-    const { nativeElement } = this.jobsUl
+    const { nativeElement } = this.jobListComp.jobsUl
     if (!nativeElement) {
       return
     }
