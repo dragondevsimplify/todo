@@ -2,16 +2,16 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import type { Job, JobStatus } from './models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AddJobComponent } from "./components/add-job/add-job.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, AddJobComponent],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
   jobs: Job[] = [];
-  jobInput = '';
   activeTabName: JobStatus = 'all'
   someCompleted = false
   allCompleted = false
@@ -26,22 +26,9 @@ export class AppComponent {
     return this.jobs.filter(i => status === 'active' ? !i.completed : i.completed)
   }
 
-  addJob() {
-    if (!this.jobInput) {
-      return
-    };
-
-    this.jobs.push({
-      title: this.jobInput,
-    });
-
-    this.jobInput = '';
-  }
-
   toggleJobComplete(job: Job) {
     job.completed = !job.completed;
-    this.someCompleted = this.isSomeJobsCompleted()
-    this.allCompleted = this.isAllJobsCompleted()
+    this.reloadJobsStatus()
   }
 
   deleteJob(idx: number) {
@@ -56,35 +43,17 @@ export class AppComponent {
     this.jobs = this.getJobsByStatus('active')
   }
 
-  toggleAllJobComplete() {
-    if (!this.jobs.length) {
-      return
-    }
-
-    this.someCompleted = false
-    this.allCompleted = true
-    for (const job of this.jobs) {
-      if (job.completed) {
-        this.someCompleted = true
-      } else {
-        this.allCompleted = false
-      }
-    }
-
-    this.jobs.forEach(job => {
-      job.completed = (this.someCompleted && !this.allCompleted) ? true : !this.allCompleted
-    })
-
-    this.someCompleted = this.isSomeJobsCompleted()
-    this.allCompleted = this.isAllJobsCompleted()
-  }
-
   isSomeJobsCompleted() {
     return this.jobs.some(i => i.completed)
   }
 
   isAllJobsCompleted() {
     return this.jobs.every(i => i.completed)
+  }
+
+  reloadJobsStatus() {
+    this.someCompleted = this.isSomeJobsCompleted()
+    this.allCompleted = this.isAllJobsCompleted()
   }
 
   editJob(e: Event) {
