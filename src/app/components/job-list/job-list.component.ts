@@ -40,6 +40,6 @@ export class JobListComponent {
   }
 
   clearCompletedJob() {
-    this.clearCompletedJob()
+    this.jobsService.clearCompletedJob()
   }
 }

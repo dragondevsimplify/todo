@@ -26,7 +26,7 @@ export class AddJobComponent {
       return
     };
 
-    this.jobsService.add(this.jobInput)
+    this.jobsService.addJob(this.jobInput)
     this.jobInput = '';
   }
 

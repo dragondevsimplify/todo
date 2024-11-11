@@ -17,6 +17,11 @@ export class JobsService {
     return this.jobs.every(i => i.completed)
   }
 
+  reloadJobsStatus() {
+    this.someCompleted = this.isSomeJobsCompleted()
+    this.allCompleted = this.isAllJobsCompleted()
+  }
+
   getJobsByStatus(status: JobStatus) {
     if (status === 'all') {
       return this.jobs
@@ -25,16 +30,20 @@ export class JobsService {
     return this.jobs.filter(i => status === 'active' ? !i.completed : i.completed)
   }
 
-  add(title: string) {
+  addJob(title: string) {
     this.jobs.push({
       title,
       completed: false
     });
   }
 
-  reloadJobsStatus() {
-    this.someCompleted = this.isSomeJobsCompleted()
-    this.allCompleted = this.isAllJobsCompleted()
+  deleteJob(idx: number) {
+    this.jobs.splice(idx, 1);
+  }
+
+  toggleJobComplete(job: Job) {
+    job.completed = !job.completed
+    this.reloadJobsStatus()
   }
 
   toggleAllJobComplete() {
@@ -57,10 +66,6 @@ export class JobsService {
     })
 
     this.reloadJobsStatus()
-  }
-
-  deleteJob(idx: number) {
-    this.jobs.splice(idx, 1);
   }
 
   clearCompletedJob() {

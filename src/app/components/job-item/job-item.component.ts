@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Job } from '../../models';
+import { JobsService } from '../../services/jobs.service';
 
 @Component({
   selector: 'li[jobItem]',
@@ -15,12 +16,13 @@ export class JobItemComponent {
   @Input({ required: true }) job!: Job;
   @Input({ required: true }) index!: number;
 
+  constructor(private jobsService: JobsService) {}
+
   toggleJobComplete(job: Job) {
-    job.completed = !job.completed;
-    this.reloadJobsStatus.emit();
+    this.jobsService.toggleJobComplete(job)
   }
 
-  editJob(e: Event) {
+  openEditableJob(e: Event) {
     const target = e.target as HTMLElement;
 
     if (target?.localName !== 'span') {
@@ -35,5 +37,9 @@ export class JobItemComponent {
     const target = e.target as HTMLSpanElement;
     job.title = target.textContent ?? '';
     target.blur();
+  }
+
+  deleteJob(idx: number) {
+    this.jobsService.deleteJob(idx)
   }
 }
