@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import type { Job, JobStatus } from './models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { JobListComponent } from "./components/job-list/job-list.component";
   imports: [FormsModule, CommonModule, AddJobComponent, JobListComponent],
   templateUrl: './app.component.html',
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   jobs: Job[] = [];
   activeTabName: JobStatus = 'all'
   someCompleted = false
@@ -19,24 +19,12 @@ export class AppComponent implements AfterViewInit {
 
   @ViewChild(JobListComponent) jobListComp!: JobListComponent
 
-  ngAfterViewInit(): void {
-    console.log(this.jobListComp.jobsUl)
-  }
-
-  activeTab(tabName: JobStatus) {
-    this.activeTabName = tabName
-  }
-
   getJobsByStatus(status: JobStatus) {
     if (status === 'all') {
       return this.jobs
     }
 
     return this.jobs.filter(i => status === 'active' ? !i.completed : i.completed)
-  }
-
-  clearCompletedJob() {
-    this.jobs = this.getJobsByStatus('active')
   }
 
   isSomeJobsCompleted() {

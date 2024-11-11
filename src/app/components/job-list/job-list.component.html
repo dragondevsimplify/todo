@@ -6,5 +6,48 @@
     [index]="idx"
     *ngFor="let job of getJobsByStatus(activeTabName); index as idx"
     (deleteJob)="deleteJob($event)"
+    (reloadJobsStatus)="reloadJobsStatus.emit()"
   ></li>
 </ul>
+<!-- Controls -->
+<div class="flex justify-between items-center py-2 px-4 text-[15px]">
+  <p>{{ getJobsByStatus("active").length }} items left</p>
+  <div class="ml-12">
+    <button
+      class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px] mr-3"
+      [ngClass]="{
+        'outline outline-1 outline-red-600': activeTabName === 'all'
+      }"
+      (click)="activeTab('all')"
+    >
+      All
+    </button>
+    <button
+      class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px] mr-3"
+      [ngClass]="{
+        'outline outline-1 outline-red-600': activeTabName === 'active'
+      }"
+      (click)="activeTab('active')"
+    >
+      Active
+    </button>
+    <button
+      class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px]"
+      [ngClass]="{
+        'outline outline-1 outline-red-600': activeTabName === 'completed'
+      }"
+      (click)="activeTab('completed')"
+    >
+      Completed
+    </button>
+  </div>
+  <div class="min-w-[120px]">
+    <button
+      *ngIf="someCompleted"
+      class="hover:underline"
+      (click)="clearCompletedJob()"
+    >
+      Clear Completed
+    </button>
+  </div>
+</div>

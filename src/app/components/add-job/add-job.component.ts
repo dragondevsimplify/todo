@@ -24,6 +24,7 @@ export class AddJobComponent {
 
     this.jobs.push({
       title: this.jobInput,
+      completed: false
     });
 
     this.jobInput = '';
