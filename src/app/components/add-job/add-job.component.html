@@ -1,8 +1,8 @@
-<div class="relative">
+<div class="relative" *ngIf="vm$ | async as vm">
   <button
     class="absolute top-0 left-0 h-full w-10 text-[#949494] text-2xl"
     [ngClass]="{
-      'text-gray-800': allCompleted
+      'text-gray-800': vm.allCompleted
     }"
     (click)="toggleAllJobComplete()"
   >

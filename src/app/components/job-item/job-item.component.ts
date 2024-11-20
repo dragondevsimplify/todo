@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { Job } from '../../models';
 import { JobsService } from '../../services/jobs.service';
+import { JobsStore } from '../../store/jobs.store';
 
 @Component({
   selector: 'li[jobItem]',
@@ -13,13 +14,13 @@ import { JobsService } from '../../services/jobs.service';
   },
 })
 export class JobItemComponent {
-  private jobsService = inject(JobsService);
+  private jobsStore = inject(JobsStore);
 
   @Input({ required: true }) job!: Job;
   @Input({ required: true }) index!: number;
 
   toggleJobComplete(job: Job) {
-    this.jobsService.toggleJobComplete(job);
+    this.jobsStore.toggleJobComplete(job);
   }
 
   openEditableJob(e: Event) {
@@ -36,7 +37,7 @@ export class JobItemComponent {
   updateJobTitle(e: Event) {
     const target = e.target as HTMLSpanElement;
     const newTitle = target.textContent ?? '';
-    this.jobsService.updateJob({
+    this.jobsStore.updateJob({
       id: this.job.id,
       title: newTitle
     });
@@ -44,6 +45,6 @@ export class JobItemComponent {
   }
 
   deleteJob(id: string) {
-    this.jobsService.deleteJob(id);
+    this.jobsStore.deleteJob(id);
   }
 }

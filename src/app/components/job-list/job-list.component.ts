@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { JobStatus } from '../../models';
 import { JobItemComponent } from "../job-item/job-item.component";
-import { JobsService } from '../../services/jobs.service';
+import { JobsStore } from '../../store/jobs.store';
 
 @Component({
   selector: 'app-job-list',
@@ -16,27 +16,19 @@ import { JobsService } from '../../services/jobs.service';
   templateUrl: './job-list.component.html',
 })
 export class JobListComponent {
-  private jobsService = inject(JobsService)
+  private jobsStore = inject(JobsStore)
 
-  filteredJobs$ = this.jobsService.filteredJobs$
-  filterType$ = this.jobsService.filterType$
+  vm$ = this.jobsStore.vm$
+  activeJobs$ = this.jobsStore.getJobsByStatus('active')
 
   //todo: Use for app component
   @ViewChild('jobsUl') jobsUl!: ElementRef
 
-  get someCompleted() {
-    return this.jobsService.someCompleted
-  }
-
-  get numberOfActiveJobs() {
-    return this.jobsService.getJobsByStatus('active').length ?? 0
-  }
-
   activeTab(tabName: JobStatus) {
-    this.jobsService.setFilterType(tabName)
+    this.jobsStore.setFilterType(tabName)
   }
 
   clearCompletedJob() {
-    this.jobsService.clearCompletedJob()
+    this.jobsStore.clearCompletedJob()
   }
 }

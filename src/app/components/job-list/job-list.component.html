@@ -1,21 +1,21 @@
-<ng-container *ngIf="filteredJobs$ | async as filteredJobs;">
+<ng-container *ngIf="vm$ | async as vm;">
   <ul #jobsUl>
     <li
       jobItem
       class="flex w-full text-2xl relative"
       [job]="job"
       [index]="idx"
-      *ngFor="let job of filteredJobs; index as idx"
+      *ngFor="let job of vm.jobs; index as idx"
     ></li>
   </ul>
   <!-- Controls -->
   <div class="flex justify-between items-center py-2 px-4 text-[15px]">
-    <p>{{ numberOfActiveJobs }} items left</p>
-    <div *ngIf="filterType$ | async as filterType" class="ml-12">
+    <p *ngIf="activeJobs$ | async as activeJobs">{{ activeJobs.length }} items left</p>
+    <div class="ml-12">
       <button
         class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px] mr-3"
         [ngClass]="{
-          'outline outline-1 outline-red-600': filterType === 'all'
+          'outline outline-1 outline-red-600': vm.filterType === 'all'
         }"
         (click)="activeTab('all')"
       >
@@ -24,7 +24,7 @@
       <button
         class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px] mr-3"
         [ngClass]="{
-          'outline outline-1 outline-red-600': filterType === 'active'
+          'outline outline-1 outline-red-600': vm.filterType === 'active'
         }"
         (click)="activeTab('active')"
       >
@@ -33,7 +33,7 @@
       <button
         class="border-none rounded-sm hover:outline hover:outline-1 hover:outline-red-600 focus:shadow-[0_0_2px_3px_#cf7d7d] px-[7px]"
         [ngClass]="{
-          'outline outline-1 outline-red-600': filterType === 'completed'
+          'outline outline-1 outline-red-600': vm.filterType === 'completed'
         }"
         (click)="activeTab('completed')"
       >
@@ -42,7 +42,7 @@
     </div>
     <div class="min-w-[120px]">
       <button
-        *ngIf="someCompleted"
+        *ngIf="vm.someCompleted"
         class="hover:underline"
         (click)="clearCompletedJob()"
       >

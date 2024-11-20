@@ -1,7 +1,9 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { JobsService } from '../../services/jobs.service';
+import { JobsStore } from '../../store/jobs.store';
+import { Job } from '../../models';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-add-job',
@@ -10,24 +12,28 @@ import { JobsService } from '../../services/jobs.service';
   templateUrl: './add-job.component.html',
 })
 export class AddJobComponent {
-  private jobsService = inject(JobsService)
+  private jobsStore = inject(JobsStore)
+
+  vm$ = this.jobsStore.vm$
 
   jobTitleInput = '';
-
-  get allCompleted() {
-    return this.jobsService.allCompleted
-  }
 
   addJob() {
     if (!this.jobTitleInput) {
       return
     };
 
-    this.jobsService.addJob(this.jobTitleInput)
+    const job: Job = {
+      id: uuidv4(),
+      title: this.jobTitleInput,
+      completed: false
+    }
+
+    this.jobsStore.addJob(job)
     this.jobTitleInput = '';
   }
 
   toggleAllJobComplete() {
-    this.jobsService.toggleAllJobComplete()
+    this.jobsStore.toggleAllJobsToComplete()
   }
 }
