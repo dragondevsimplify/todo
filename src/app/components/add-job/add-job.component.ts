@@ -18,7 +18,7 @@ export class AddJobComponent {
   constructor(private jobsService: JobsService) {}
 
   get allCompleted() {
-    return this.jobsService.allCompleted
+    return this.jobsService.someCompleted
   }
 
   addJob() {

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  Input,
+  inject,
   ViewChild,
 } from '@angular/core';
 import { JobStatus } from '../../models';
@@ -16,23 +16,24 @@ import { JobsService } from '../../services/jobs.service';
   templateUrl: './job-list.component.html',
 })
 export class JobListComponent {
-  @Input({ required: true }) activeTabName!: JobStatus;
+  private jobsService = inject(JobsService)
+
+  filteredJobs$ = this.jobsService.filteredJobs$
+  filterType$ = this.jobsService.filterType$
 
   //todo: Use for app component
   @ViewChild('jobsUl') jobsUl!: ElementRef
-
-  constructor(private jobsService: JobsService) {}
 
   get someCompleted() {
     return this.jobsService.someCompleted
   }
 
-  getJobsByStatus(status: JobStatus) {
-    return this.jobsService.getJobsByStatus(status)
+  get numberOfActiveJobs() {
+    return this.jobsService.getJobsByStatus('active').length ?? 0
   }
 
   activeTab(tabName: JobStatus) {
-    this.activeTabName = tabName
+    this.jobsService.setFilterType(tabName)
   }
 
   deleteJob(idx: number) {

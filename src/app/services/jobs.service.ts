@@ -1,75 +1,136 @@
 import { Injectable } from '@angular/core';
 import { Job, JobStatus } from '../models';
+import { BehaviorSubject, filter, map } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+
+interface State {
+  jobs: Job[];
+  someCompleted: boolean;
+  allCompleted: boolean;
+  filterType: JobStatus;
+}
+
+const initialState: State = {
+  jobs: [],
+  someCompleted: false,
+  allCompleted: false,
+  filterType: 'all',
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobsService {
-  jobs: Job[] = []
-  someCompleted = false
-  allCompleted = false
+  private _state = new BehaviorSubject<State>(initialState);
+  state$ = this._state.asObservable();
+  filteredJobs$ = this.state$.pipe(
+    map(({ jobs, filterType }: Pick<State, 'jobs' | 'filterType'>) => {
+      switch (filterType) {
+        case 'active':
+          return jobs.filter((i) => !i.completed);
+        case 'completed':
+          return jobs.filter((i) => i.completed);
+        default:
+          return jobs;
+      }
+    })
+  );
+  filterType$ = this.state$.pipe(
+    map(state => state.filterType)
+  )
 
-  isSomeJobsCompleted() {
-    return this.jobs.some(i => i.completed)
+  patchState(newState: Partial<State>) {
+    const dataEmit: State = {
+      ...this._state.value,
+      ...newState,
+    };
+
+    if (newState.jobs) {
+      dataEmit.someCompleted = newState.jobs.some((i) => i.completed);
+      dataEmit.allCompleted = newState.jobs.every((i) => i.completed);
+    }
+
+    this._state.next(dataEmit);
   }
 
-  isAllJobsCompleted() {
-    return this.jobs.every(i => i.completed)
+  get someCompleted() {
+    return this._state.value.jobs.some((i) => i.completed);
   }
 
-  reloadJobsStatus() {
-    this.someCompleted = this.isSomeJobsCompleted()
-    this.allCompleted = this.isAllJobsCompleted()
+  get allCompleted() {
+    return this._state.value.jobs.every((i) => i.completed);
+  }
+
+  setFilterType(type: JobStatus) {
+    this.patchState({ filterType: type })
   }
 
   getJobsByStatus(status: JobStatus) {
     if (status === 'all') {
-      return this.jobs
+      return this._state.value.jobs;
     }
 
-    return this.jobs.filter(i => status === 'active' ? !i.completed : i.completed)
+    return this._state.value.jobs.filter((i) =>
+      status === 'active' ? !i.completed : i.completed
+    );
   }
 
   addJob(title: string) {
-    this.jobs.push({
-      title,
-      completed: false
-    });
+    const newJobs = [
+      ...this._state.value.jobs,
+      {
+        id: uuidv4(),
+        title,
+        completed: false,
+      },
+    ];
+    this.patchState({ jobs: newJobs });
   }
 
   deleteJob(idx: number) {
-    this.jobs.splice(idx, 1);
+    const newJobs = this._state.value.jobs.splice(idx, 1);
+    this.patchState({ jobs: newJobs });
   }
 
   toggleJobComplete(job: Job) {
-    job.completed = !job.completed
-    this.reloadJobsStatus()
+    const newJobs = structuredClone(this._state.value.jobs);
+    newJobs.forEach((i) => {
+      if (i.id === job.id) {
+        i.completed = !i.completed;
+      }
+    });
+    this.patchState({ jobs: newJobs });
   }
 
   toggleAllJobComplete() {
-    if (!this.jobs.length) {
-      return
+    const newJobs = structuredClone(this._state.value.jobs);
+
+    if (!newJobs.length) {
+      return;
     }
 
-    this.someCompleted = false
-    this.allCompleted = true
-    for (const job of this.jobs) {
+    this._state.value.someCompleted = false;
+    this._state.value.allCompleted = true;
+    for (const job of newJobs) {
       if (job.completed) {
-        this.someCompleted = true
+        this._state.value.someCompleted = true;
       } else {
-        this.allCompleted = false
+        this._state.value.allCompleted = false;
       }
     }
 
-    this.jobs.forEach(job => {
-      job.completed = (this.someCompleted && !this.allCompleted) ? true : !this.allCompleted
-    })
+    newJobs.forEach((job) => {
+      job.completed =
+        this._state.value.someCompleted && !this._state.value.allCompleted
+          ? true
+          : !this._state.value.allCompleted;
+    });
 
-    this.reloadJobsStatus()
+    this.patchState({ jobs: newJobs });
   }
 
   clearCompletedJob() {
-    this.jobs = this.getJobsByStatus('active')
-    this.reloadJobsStatus()
+    const newJobs = this.getJobsByStatus('active');
+    this.patchState({ jobs: newJobs });
   }
 }

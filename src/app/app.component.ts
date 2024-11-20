@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AddJobComponent } from "./components/add-job/add-job.component";
 import { JobListComponent } from "./components/job-list/job-list.component";
-import { JobsService } from './services/jobs.service';
 
 @Component({
   selector: 'app-root',
