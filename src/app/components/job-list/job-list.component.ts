@@ -36,10 +36,6 @@ export class JobListComponent {
     this.jobsService.setFilterType(tabName)
   }
 
-  deleteJob(idx: number) {
-    this.jobsService.deleteJob(idx)
-  }
-
   clearCompletedJob() {
     this.jobsService.clearCompletedJob()
   }

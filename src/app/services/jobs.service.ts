@@ -87,8 +87,22 @@ export class JobsService {
     this.patchState({ jobs: newJobs });
   }
 
-  deleteJob(idx: number) {
-    const newJobs = this._state.value.jobs.splice(idx, 1);
+  updateJob(job: Partial<Job> & Pick<Job, 'id'>) {
+    if (!job.id) {
+      return
+    }
+
+    const newJobs = structuredClone(this._state.value.jobs)
+    const jobFound = newJobs.find(j => j.id === job.id)
+    if (jobFound) {
+      Object.assign(jobFound, job)
+    }
+
+    this.patchState({ jobs: newJobs })
+  }
+
+  deleteJob(id: string) {
+    const newJobs = this._state.value.jobs.filter(i => i.id !== id);
     this.patchState({ jobs: newJobs });
   }
 

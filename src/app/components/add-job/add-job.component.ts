@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Job } from '../../models';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JobsService } from '../../services/jobs.service';
@@ -11,23 +10,21 @@ import { JobsService } from '../../services/jobs.service';
   templateUrl: './add-job.component.html',
 })
 export class AddJobComponent {
-  jobInput = '';
+  private jobsService = inject(JobsService)
 
-  @Output() reloadJobsStatus = new EventEmitter<void>()
-
-  constructor(private jobsService: JobsService) {}
+  jobTitleInput = '';
 
   get allCompleted() {
-    return this.jobsService.someCompleted
+    return this.jobsService.allCompleted
   }
 
   addJob() {
-    if (!this.jobInput) {
+    if (!this.jobTitleInput) {
       return
     };
 
-    this.jobsService.addJob(this.jobInput)
-    this.jobInput = '';
+    this.jobsService.addJob(this.jobTitleInput)
+    this.jobTitleInput = '';
   }
 
   toggleAllJobComplete() {

@@ -13,12 +13,12 @@
       'line-through text-gray-400': job.completed,
     }"
   [attr.data-jobindex]="index"
-  (keydown.enter)="updateJobTitle($event, job)"
+  (keydown.enter)="updateJobTitle($event)"
   >{{ job.title }}</span
 >
 <button
   class="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 py-0 px-2 -mr-2"
-  (click)="deleteJob(index)"
+  (click)="deleteJob(job.id)"
 >
   <i class="fa-solid fa-xmark"></i>
 </button>

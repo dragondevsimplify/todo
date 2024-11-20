@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Job } from '../../models';
 import { JobsService } from '../../services/jobs.service';
 
@@ -9,17 +9,17 @@ import { JobsService } from '../../services/jobs.service';
   imports: [CommonModule],
   templateUrl: './job-item.component.html',
   host: {
-    '(dblclick)': "editJob($event)"
-  }
+    '(dblclick)': 'openEditableJob($event)',
+  },
 })
 export class JobItemComponent {
+  private jobsService = inject(JobsService);
+
   @Input({ required: true }) job!: Job;
   @Input({ required: true }) index!: number;
 
-  constructor(private jobsService: JobsService) {}
-
   toggleJobComplete(job: Job) {
-    this.jobsService.toggleJobComplete(job)
+    this.jobsService.toggleJobComplete(job);
   }
 
   openEditableJob(e: Event) {
@@ -33,13 +33,17 @@ export class JobItemComponent {
     target.focus();
   }
 
-  updateJobTitle(e: Event, job: Job) {
+  updateJobTitle(e: Event) {
     const target = e.target as HTMLSpanElement;
-    job.title = target.textContent ?? '';
+    const newTitle = target.textContent ?? '';
+    this.jobsService.updateJob({
+      id: this.job.id,
+      title: newTitle
+    });
     target.blur();
   }
 
-  deleteJob(idx: number) {
-    this.jobsService.deleteJob(idx)
+  deleteJob(id: string) {
+    this.jobsService.deleteJob(id);
   }
 }
